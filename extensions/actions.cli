@@ -1,0 +1,36 @@
+## admin cli commands to edit the configuration
+embed-server --std-out=echo  --server-config=standalone-openshift.xml
+
+batch
+
+set DB_DRIVER_NAME=mariadb
+set DB_DRIVER=org.mariadb.jdbc.Driver
+set DB_XA_DRIVER=org.mariadb.jdbc.MariaDbDataSource
+set DB_MARIADB_MODULE=org.mariadb
+
+set FILE=/opt/eap/extensions/jdbc-drivers/mariabdb-java-client-2.7.2.jar
+
+# INSERT JBOSS-CLI commands here (e.g adding modules and connecting to datagrid hotrod)
+
+
+#Add module for MariaDB
+
+module add --name=$DB_MARIADB_MODULE --resources=$FILE --dependencies=javax.api,javax.resource.api
+
+#Register mariadb-driver
+/subsystem=datasources/jdbc-driver=$DB_DRIVER_NAME:add( \
+  driver-name=$DB_DRIVER_NAME, \
+  driver-module-name=$DB_EAP_MODULE, \
+  driver-class-name=$DB_DRIVER, \
+  driver-xa-datasource-class-name=$DB_XA_DRIVER \
+)
+
+#Add MariaDB DataSource
+
+data-source add --name=MariaDBDS --jndi-name=java:jboss/MariaDBDS --driver-name=$DB_DRIVER_NAME --connection-url=jdbc:mariadb://${MARIADB_URL} --user-name=${MARIADB_USERNAME} --password=${MARIADB_PASSWORD} --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
+
+#Use new DataSource
+/subsystem=keycloak-server/spi=connectionsJpa/provider=default/:map-put(name=properties, key=dataSource, value=java:jboss/MariaDBDS)
+:reload
+run-batch
+quit
