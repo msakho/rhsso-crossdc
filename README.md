@@ -1,0 +1,1 @@
+# Using the JBoss CLI to configure an external MariaDB database with Red Hat SSO for Openshift
