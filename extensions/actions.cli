@@ -20,7 +20,7 @@ module add --name=$DB_MARIADB_MODULE --resources=$FILE --dependencies=javax.api,
 #Register mariadb-driver
 /subsystem=datasources/jdbc-driver=$DB_DRIVER_NAME:add( \
   driver-name=$DB_DRIVER_NAME, \
-  driver-module-name=$DB_EAP_MODULE, \
+  driver-module-name=$DB_MARIADB_MODULE, \
   driver-class-name=$DB_DRIVER, \
   driver-xa-datasource-class-name=$DB_XA_DRIVER \
 )
