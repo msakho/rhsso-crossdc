@@ -8,7 +8,7 @@ set DB_DRIVER=org.mariadb.jdbc.Driver
 set DB_XA_DRIVER=org.mariadb.jdbc.MariaDbDataSource
 set DB_MARIADB_MODULE=org.mariadb
 
-set DG_HOST=172.30.170.180
+set DG_HOST=dsv-infinispan.dsv-crossdc.svc.cluster.local
 set AUTH_PASSWORD=VCYfvDrERp69Er5O
 
 
