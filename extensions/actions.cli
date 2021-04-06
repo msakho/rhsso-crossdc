@@ -34,7 +34,7 @@ module add --name=$DB_MARIADB_MODULE --resources=$FILE --dependencies=javax.api,
 data-source add --name=MariaDBDS --jndi-name=java:jboss/MariaDBDS --driver-name=$DB_DRIVER_NAME --connection-url=jdbc:mariadb://${MARIADB_URL} --user-name=${MARIADB_USERNAME} --password=${MARIADB_PASSWORD} --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
 
 #Use new DataSource
-/subsystem=keycloak-server/spi=connectionsJpa/provider=default/:map-put(name=properties, key=dataSource, value=java:jboss/MariaDBDS)
+#/subsystem=keycloak-server/spi=connectionsJpa/provider=default/:map-put(name=properties, key=dataSource, value=java:jboss/MariaDBDS)
 
 #/system-property=javax.net.debug:add(value="ssl,handshake")
 #/subsystem=infinispan/cache-container=keycloak:write-attribute(name=module,value=org.keycloak.keycloak-model-infinispan)
