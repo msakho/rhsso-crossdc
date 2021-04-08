@@ -37,6 +37,7 @@ data-source add --name=MariaDBDS --jndi-name=java:jboss/MariaDBDS --driver-name=
 /subsystem=keycloak-server/spi=connectionsJpa/provider=default/:map-put(name=properties, key=dataSource, value=java:jboss/MariaDBDS)
 
 #/system-property=javax.net.debug:add(value="ssl,handshake")
+/system-property=jboss.site.name:add(value="USE")
 /subsystem=infinispan/cache-container=keycloak:write-attribute(name=module,value=org.keycloak.keycloak-model-infinispan)
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=remote-cache/:add(host=$DG_HOST,port=${remote.cache.port:11222},fixed-source-port=true)
 
