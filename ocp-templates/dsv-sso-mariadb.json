@@ -13,10 +13,10 @@
             "template.openshift.io/documentation-url": "https://access.redhat.com/documentation/en/red-hat-single-sign-on/",
             "template.openshift.io/support-url": "https://access.redhat.com"
         },
-        "name": "dsv-rhsso-mariadb"
+        "name": "dsv-sso-mariadb"
     },
     "labels": {
-        "template": "dsv-rhsso-mariadb",
+        "template": "dsv-sso-mariadb",
         "rhsso": "7.4.6.GA"
     },
     "message": "A new RH-SSO service has been created in your project. The admin username/password for accessing the master realm via the RH-SSO console is ${SSO_ADMIN_USERNAME}/${SSO_ADMIN_PASSWORD}. Please be sure to create the following secrets: \"${HTTPS_SECRET}\" containing the ${HTTPS_KEYSTORE} file used for serving secure content; \"${JGROUPS_ENCRYPT_SECRET}\" containing the ${JGROUPS_ENCRYPT_KEYSTORE} file used for securing JGroups communications; \"${SSO_TRUSTSTORE_SECRET}\" containing the ${SSO_TRUSTSTORE} file used for securing RH-SSO requests.",
@@ -28,6 +28,7 @@
             "value": "sso",
             "required": true
         },
+        
         {
             "displayName": "MariaDB Server url",
             "description": "hostname and database name. Example : mdbeu.mydatagrid.net:3306/rhsso",
@@ -47,19 +48,7 @@
             "required": true
         },
 
-        {
-            "description": "Git source URI for application",
-            "displayName": "Git Repository URL",
-            "name": "SOURCE_REPOSITORY_URL",
-            "required": true,
-            "value": "https://gitlab.consulting.redhat.com/msakho/dsv-rhsso.git"
-        },
-        {
-            "description": "Git branch/tag reference",
-            "displayName": "Git Reference",
-            "name": "SOURCE_REPOSITORY_REF",
-            "value": "master"
-        },
+        
         {
             "description": "The amount of CPU to request for each SSO container.",
             "displayName": "SSO CPU request",
@@ -394,69 +383,7 @@
             }
         },
 
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "${APPLICATION_NAME}",
-                "labels": {
-                    "application": "${APPLICATION_NAME}"
-                }
-            }
-        },
-        {
-            "kind": "BuildConfig",
-            "apiVersion": "v1",
-            "metadata": {
-                "labels": {
-                    "application": "${APPLICATION_NAME}"
-                },
-                "name": "${APPLICATION_NAME}"
-            },
-            "spec": {
-                "output": {
-                    "to": {
-                        "kind": "ImageStreamTag",
-                        "name": "${APPLICATION_NAME}:latest"
-                    }
-                },
-                "source": {
-                    "contextDir": "${CONTEXT_DIR}",
-                    "git": {
-                        "ref": "${SOURCE_REPOSITORY_REF}",
-                        "uri": "${SOURCE_REPOSITORY_URL}"
-                    },
-                    "sourceSecret": {
-                        "name": "${GITLAB_SECRET}"
-                    },
-
-                    "type": "Git"
-                },
-                "strategy": {
-                    "sourceStrategy": {
-                        
-                        "forcePull": true,
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "sso74-openshift-rhel8:7.4",
-                            "namespace": "${IMAGE_STREAM_NAMESPACE}"
-                        }
-                    },
-                    "type": "Source"
-                },
-                "triggers": [
-                    {
-                        "imageChange": {},
-                        "type": "ImageChange"
-                    },
-                    {
-                        "type": "ConfigChange"
-                    }
-                ]
-            }
-        },
-
-
+        
         {
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
@@ -481,7 +408,7 @@
                             "from": {
                                 "kind": "ImageStreamTag",
                                 "namespace": "${IMAGE_STREAM_NAMESPACE}",
-                                "name": "sso74-openshift-rhel8:7.4"
+                                "name": "dsv-rhsso-mariadb:latest"
                             }
                         }
                     },
@@ -544,7 +471,7 @@
                                             "/opt/eap/bin/livenessProbe.sh"
                                         ]
                                     },
-                                    "initialDelaySeconds": 60
+                                    "initialDelaySeconds": 120
                                 },
                                 "readinessProbe": {
                                     "exec": {
