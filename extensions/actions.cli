@@ -14,7 +14,11 @@ set AUTH_PASSWORD=VCYfvDrERp69Er5O
 
 set FILE=/opt/eap/extensions/jdbc-drivers/mariadb-java-client-2.7.2.jar
 
+
+
 # INSERT JBOSS-CLI commands here (e.g adding modules and connecting to datagrid hotrod)
+
+
 
 
 #Add module for MariaDB
@@ -28,6 +32,10 @@ module add --name=$DB_MARIADB_MODULE --resources=$FILE --dependencies=javax.api,
   driver-class-name=$DB_DRIVER, \
   driver-xa-datasource-class-name=$DB_XA_DRIVER \
 )
+
+# Deploy Keycloak benckmark as a module if you want to run keycloak-benckmark rest API
+
+module add --name=org.keycloak.keycloak-benchmark --resources=/opt/eap/extensions/keycloak-benchmark/keycloak-benchmark-dataset-0.4.jar --dependencies=org.keycloak.keycloak-common,org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.keycloak.keycloak-model-infinispan,javax.ws.rs.api,org.jboss.resteasy.resteasy-jaxrs,org.jboss.logging,org.infinispan,org.infinispan.commons,org.infinispan.client.hotrod,org.infinispan.persistence.remote
 
 #Add MariaDB DataSource
 
@@ -52,6 +60,10 @@ data-source add --name=MariaDBDS --jndi-name=java:jboss/MariaDBDS --driver-name=
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures/store=remote:add(cache=loginFailures,remote-servers=[remote-cache],fetch-state=false,passivation=false,preload=false,purge=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory,infinispan.client.hotrod.sasl_mechanism=DIGEST-MD5,infinispan.client.hotrod.auth_username=developer,infinispan.client.hotrod.auth_password=$AUTH_PASSWORD,infinispan.client.hotrod.use_ssl=false,infinispan.client.hotrod.auth_realm=default,infinispan.client.hotrod.auth_server_name=infinispan})
 
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=actionTokens/store=remote:add(cache=actionTokens,remote-servers=[remote-cache],fetch-state=false,passivation=false,preload=false,purge=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory,infinispan.client.hotrod.sasl_mechanism=DIGEST-MD5,infinispan.client.hotrod.auth_username=developer,infinispan.client.hotrod.auth_password=$AUTH_PASSWORD,infinispan.client.hotrod.use_ssl=false,infinispan.client.hotrod.auth_realm=default,infinispan.client.hotrod.auth_server_name=infinispan})
+
+
+
+/subsystem=keycloak-server:list-add(name=providers,value=module:org.keycloak.keycloak-benchmark)
 
 :reload
 run-batch
